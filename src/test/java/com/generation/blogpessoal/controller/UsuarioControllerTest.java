@@ -108,5 +108,24 @@ public class UsuarioControllerTest {
 		assertEquals(HttpStatus.OK, resposta.getStatusCode());
 
 	}
+	
+	@Test
+	@DisplayName("Realizar Login do Usuário")
+	public void deveRealizarLogin() {
+		// Criação de um usuário para login
+		usuarioService.cadastrarUsuario(new Usuario(0L, "Login Test", "logintest@test.com", "login123", "-"));
+
+		// Criação do objeto Usuario com as credenciais de login
+		Usuario Usuario = new Usuario(null, "logintest@test.com", "login123", null, null);
+
+		// Enviando a requisição de login
+		HttpEntity<Usuario> corpoRequisicao = new HttpEntity<Usuario>(Usuario);
+
+		ResponseEntity<Usuario> corpoResposta = testRestTemplate.exchange("/usuarios/logar", HttpMethod.POST,
+				corpoRequisicao, Usuario.class);
+
+		assertEquals(HttpStatus.OK, corpoResposta.getStatusCode());
+		assertEquals(Usuario.getUsuario(), corpoResposta.getBody().getUsuario());
+	}
 
 }
